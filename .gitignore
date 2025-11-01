@@ -1,0 +1,37 @@
+# Maven 构建目录
+target/
+
+# 数据库文件
+db/
+data/
+*.db
+*.mv.db
+*.trace.db
+
+# 配置文件
+application-dev.properties
+application-prod.properties
+
+# IDE 配置
+.idea
+.qoder
+.vscode
+*.iml
+
+# 打包相关临时文件
+*.log
+*.tmp
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Java 编译文件
+*.class
+*.jar
+*.war
+*.ear
+
+# 排除打包后的 exe (可选,如果不想提交打包结果)
+# target/dist/

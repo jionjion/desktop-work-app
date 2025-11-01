@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="top.jionjion.work.controller.TodoRecordController"
+      styleClass="bg-white,rounded,shadow"
+      spacing="15"
+      prefWidth="800"
+      prefHeight="600">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- 标题区 -->
+    <Label fx:id="titleLabel"
+           text="待办记录"
+           styleClass="text-primary"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'Microsoft YaHei UI';"/>
+
+    <!-- 分隔线 -->
+    <Separator/>
+
+    <!-- 输入区 -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="todoInputField"
+                   promptText="输入待办事项并按回车..."
+                   HBox.hgrow="ALWAYS"
+                   style="-fx-font-size: 14px; -fx-font-family: 'Microsoft YaHei UI';"/>
+    </HBox>
+
+    <!-- 待办列表区 -->
+    <ListView fx:id="todoListView"
+              VBox.vgrow="ALWAYS"
+              style="-fx-font-family: 'Microsoft YaHei UI';"/>
+
+    <!-- 底部操作区 -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label fx:id="todoCountLabel"
+               text="未完成: 0"
+               style="-fx-font-size: 12px; -fx-text-fill: #6c757d; -fx-font-family: 'Microsoft YaHei UI';"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button fx:id="clearCompletedBtn"
+                text="清空已完成"
+                styleClass="btn,btn-secondary"
+                style="-fx-font-family: 'Microsoft YaHei UI';"/>
+    </HBox>
+
+</VBox>

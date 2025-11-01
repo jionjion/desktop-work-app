@@ -1,0 +1,44 @@
+/* CSS样式文件 */
+.root {
+    -fx-background-color: #f5f5f5;
+}
+
+.vbox {
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+    -fx-padding: 20px;
+}
+
+.title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.mfx-text-field {
+    -fx-min-width: 300px;
+    -fx-pref-width: 300px;
+    -fx-max-width: 300px;
+}
+
+.mfx-button {
+    -fx-min-width: 100px;
+    -fx-pref-width: 100px;
+    -fx-max-width: 100px;
+    -fx-background-color: #2196f3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.mfx-button:hover {
+    -fx-background-color: #1976d2;
+}
+
+.mfx-list-view {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}

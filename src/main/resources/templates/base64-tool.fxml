@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="top.jionjion.work.controller.Base64ToolTemplateController"
+   spacing="15" styleClass="bg-white,rounded,shadow">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+
+   <!-- 标题 -->
+   <Label fx:id="titleLabel" text="Base64编解码" styleClass="text-primary"
+      style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+   <!-- 输入区 -->
+   <VBox spacing="8">
+      <Label text="输入文本:" styleClass="text-dark" />
+      <TextArea fx:id="inputArea" promptText="请输入要编码/解码的文本..."
+         prefRowCount="5" style="-fx-pref-width: 500px;" />
+   </VBox>
+
+   <!-- 操作按钮区 -->
+   <HBox spacing="10" alignment="CENTER_LEFT">
+      <Button fx:id="encodeBtn" text="编码" styleClass="btn,btn-primary" onAction="#onEncode" />
+      <Button fx:id="decodeBtn" text="解码" styleClass="btn,btn-secondary" onAction="#onDecode" />
+      <Button fx:id="clearBtn" text="清空" styleClass="btn,btn-warning" onAction="#onClear" />
+   </HBox>
+
+   <!-- 输出区 -->
+   <VBox spacing="8">
+      <Label text="输出结果:" styleClass="text-dark" />
+      <TextArea fx:id="outputArea" editable="false" prefRowCount="5"
+         style="-fx-pref-width: 500px;" />
+   </VBox>
+</VBox>

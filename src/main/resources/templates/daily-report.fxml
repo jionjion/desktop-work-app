@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="top.jionjion.work.controller.DailyReportTemplateController"
+   spacing="15" styleClass="bg-white,rounded,shadow">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+
+   <!-- 标题 -->
+   <Label text="日报生成器" styleClass="text-primary" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+   <HBox>
+      <Separator HBox.hgrow="ALWAYS" />
+   </HBox>
+
+   <!-- 操作按钮区 -->
+   <HBox spacing="10" alignment="CENTER_LEFT">
+      <Button fx:id="generateBtn" text="生成日报" styleClass="btn,btn-primary" onAction="#onGenerateReport" />
+      <Button fx:id="clearBtn" text="清空内容" styleClass="btn,btn-secondary" onAction="#onClearContent" />
+      <Button fx:id="copyBtn" text="复制日报" styleClass="btn,btn-success" onAction="#onCopyReport" />
+      <Button fx:id="saveBtn" text="保存日报" styleClass="btn,btn-primary" onAction="#onSaveReport" />
+   </HBox>
+
+
+   <!-- 今日完成工作输入区 -->
+   <VBox spacing="8">
+      <Label fx:id="titleLabel" text="今日日报：" styleClass="text-dark" />
+      <TextArea fx:id="workReportContentArea" promptText="请输入今日日报内容..."
+         prefRowCount="30" style="-fx-pref-width: 500px;" />
+   </VBox>
+</VBox>

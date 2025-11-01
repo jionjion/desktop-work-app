@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="top.jionjion.work.controller.FolderShortcutController"
+   fx:id="rootPane"
+   spacing="15"
+   styleClass="bg-white,rounded,shadow">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+
+   <!-- 标题栏 -->
+   <HBox spacing="15" alignment="CENTER_LEFT">
+      <Label fx:id="titleLabel" text="文件快捷访问" styleClass="text-primary"
+         style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+      <Region HBox.hgrow="ALWAYS" />
+      <Button fx:id="configButton" text="配置" styleClass="btn,btn-primary" />
+   </HBox>
+   
+   <HBox>
+      <Separator HBox.hgrow="ALWAYS" />
+   </HBox>
+
+   <!-- 中央磁贴区域 -->
+   <StackPane fx:id="contentPane" VBox.vgrow="ALWAYS">
+      <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="false">
+         <GridPane fx:id="tilesGrid" alignment="CENTER" hgap="15" vgap="15" />
+      </ScrollPane>
+   </StackPane>
+</VBox>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="top.jionjion.work.controller.FolderConfigController"
+      spacing="15" styleClass="bg-white,rounded,shadow">
+
+    <!-- 表单输入区域 -->
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100.0"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="文件夹名称:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="nameField" promptText="如: 项目代码"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="文件夹路径:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <TextField fx:id="pathField" promptText="选择或输入完整路径"
+                       HBox.hgrow="ALWAYS"/>
+            <Button fx:id="browseButton" text="浏览"/>
+        </HBox>
+    </GridPane>
+
+    <!-- 操作按钮 -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="addButton" text="添加" styleClass="btn,btn-primary"/>
+        <Button fx:id="updateButton" text="更新" styleClass="btn,btn-success"/>
+        <Button fx:id="deleteButton" text="删除" styleClass="btn,btn-danger"/>
+        <Button fx:id="clearButton" text="清空" styleClass="btn,btn-secondary"/>
+    </HBox>
+
+    <!-- 快捷方式列表 -->
+    <VBox spacing="8" VBox.vgrow="ALWAYS">
+        <Label text="快捷方式列表：" styleClass="text-dark"/>
+        <TableView fx:id="folderTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="60.0"/>
+                <TableColumn fx:id="nameColumn" text="名称" prefWidth="150.0"/>
+                <TableColumn fx:id="pathColumn" text="路径" prefWidth="300.0"/>
+                <TableColumn fx:id="accessCountColumn" text="访问次数" prefWidth="100.0"/>
+                <TableColumn fx:id="lastAccessTimeColumn" text="最后访问" prefWidth="150.0"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>
