@@ -1,7 +1,7 @@
 package top.jionjion.work.supper.runner;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.EnvironmentAware;
@@ -20,12 +20,12 @@ public class EnvironmentInfoRunner implements EnvironmentAware, ApplicationRunne
     private Environment environment;
 
     @Override
-    public void setEnvironment(@NotNull Environment environment) {
+    public void setEnvironment(@NonNull Environment environment) {
         this.environment = environment;
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         log.info("------------------ 环境信息 ------------------");
         log.info("当前激活的配置文件: {}", String.join(", ", environment.getActiveProfiles()));
         log.info("数据库连接地址: {}", environment.getProperty("spring.datasource.url"));
