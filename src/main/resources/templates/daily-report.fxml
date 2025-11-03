@@ -28,7 +28,7 @@
 
    <!-- 今日完成工作输入区 -->
    <VBox spacing="8">
-      <Label fx:id="titleLabel" text="今日日报：" styleClass="text-dark" />
+      <Label fx:id="titleLabel" text="日期：" styleClass="text-dark" />
       <TextArea fx:id="workReportContentArea" promptText="请输入今日日报内容..."
          prefRowCount="30" style="-fx-pref-width: 500px;" />
    </VBox>

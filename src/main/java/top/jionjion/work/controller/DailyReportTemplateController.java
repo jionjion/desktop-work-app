@@ -1,5 +1,7 @@
 package top.jionjion.work.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -7,10 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import top.jionjion.work.service.DailyReportService;
-
+import javafx.util.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.jionjion.work.service.DailyReportService;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -19,7 +21,7 @@ import java.util.ResourceBundle;
 
 /**
  * 日报生成器模板控制器
- * 
+ *
  * @author Jion
  */
 @Component
@@ -39,6 +41,9 @@ public class DailyReportTemplateController implements Initializable {
     @FXML
     private Button copyBtn;
 
+    @FXML
+    private Button saveBtn;
+
     @Autowired
     private DailyReportService dailyReportService;
 
@@ -57,8 +62,24 @@ public class DailyReportTemplateController implements Initializable {
      */
     @FXML
     private void onGenerateReport() {
+        String originalText = generateBtn.getText();
+
+        generateBtn.setDisable(true);
+        generateBtn.setText("生成中...");
         String report = dailyReportService.generateReport();
         workReportContentArea.setText(report);
+
+        // 2秒后恢复按钮文本
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.seconds(2),
+                        event -> {
+                            copyBtn.setText(originalText);
+                            copyBtn.setDisable(false);
+                            generateBtn.setDisable(false);
+                        }));
+        timeline.setCycleCount(1);
+        timeline.play();
     }
 
     /**
@@ -66,8 +87,23 @@ public class DailyReportTemplateController implements Initializable {
      */
     @FXML
     private void onClearContent() {
+        String originalText = clearBtn.getText();
+
+        clearBtn.setDisable(true);
+        clearBtn.setText("清空中...");
         workReportContentArea.clear();
-        copyBtn.setDisable(true);
+
+        // 2秒后恢复按钮文本
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.seconds(2),
+                        event -> {
+                            copyBtn.setText(originalText);
+                            copyBtn.setDisable(false);
+                            copyBtn.setDisable(true);
+                        }));
+        timeline.setCycleCount(1);
+        timeline.play();
     }
 
     /**
@@ -88,17 +124,15 @@ public class DailyReportTemplateController implements Initializable {
             copyBtn.setDisable(true);
 
             // 2秒后恢复按钮文本
-            new Thread(() -> {
-                try {
-                    Thread.sleep(2000);
-                    javafx.application.Platform.runLater(() -> {
-                        copyBtn.setText(originalText);
-                        copyBtn.setDisable(false);
-                    });
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }).start();
+            Timeline timeline = new Timeline(
+                    new KeyFrame(
+                            Duration.seconds(2),
+                            event -> {
+                                copyBtn.setText(originalText);
+                                copyBtn.setDisable(false);
+                            }));
+            timeline.setCycleCount(1);
+            timeline.play();
         }
     }
 
@@ -107,8 +141,25 @@ public class DailyReportTemplateController implements Initializable {
      */
     @FXML
     private void onSaveReport() {
-        // 获取内容
+        saveBtn.setDisable(true);
+        String originalText = saveBtn.getText();
+
+        saveBtn.setText("保存中...");
         String content = workReportContentArea.getText();
         dailyReportService.seveTodayReport(content);
+
+        saveBtn.setText("保存成功!");
+
+        // 2秒后恢复按钮文本
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.seconds(2),
+                        event -> {
+                            saveBtn.setDisable(false);
+                            saveBtn.setText(originalText);
+                        })
+        );
+        timeline.setCycleCount(1);
+        timeline.play();
     }
 }

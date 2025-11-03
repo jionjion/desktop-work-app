@@ -1,20 +1,19 @@
 package top.jionjion.work.service.impl;
 
-import java.text.MessageFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import top.jionjion.work.entity.CodeDirectory;
 import top.jionjion.work.entity.DailyReport;
 import top.jionjion.work.repository.CodeDirectoryRepository;
 import top.jionjion.work.repository.DailyReportRepository;
 import top.jionjion.work.service.BaiLianService;
 import top.jionjion.work.service.DailyReportService;
+
+import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * 自动生成日报的工具
@@ -40,7 +39,8 @@ public class DailyReportServiceImpl implements DailyReportService {
     @Override
     public String generateReport() {
 
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder("以下为代码提交记录\n");
+        stringBuilder.append("--------------------------");
 
         // 获取当前负责的项目的地址.
         List<CodeDirectory> codeDirectoryList = this.findAllCodeDirectory();

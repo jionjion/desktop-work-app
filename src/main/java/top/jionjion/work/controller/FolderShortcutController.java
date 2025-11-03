@@ -81,7 +81,7 @@ public class FolderShortcutController {
         tilesGrid.setHgap(15);
         tilesGrid.setVgap(15);
         tilesGrid.setPadding(new Insets(20));
-        tilesGrid.setAlignment(Pos.CENTER);
+        tilesGrid.setAlignment(Pos.CENTER_LEFT);
 
         // 配置按钮事件
         configButton.setOnAction(e -> openConfigPage());

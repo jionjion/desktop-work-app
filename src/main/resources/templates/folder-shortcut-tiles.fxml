@@ -28,7 +28,7 @@
    <!-- 中央磁贴区域 -->
    <StackPane fx:id="contentPane" VBox.vgrow="ALWAYS">
       <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="false">
-         <GridPane fx:id="tilesGrid" alignment="CENTER" hgap="15" vgap="15" />
+         <GridPane fx:id="tilesGrid" alignment="CENTER_LEFT" hgap="15" vgap="15" />
       </ScrollPane>
    </StackPane>
 </VBox>
