@@ -62,24 +62,10 @@ public class DailyReportTemplateController implements Initializable {
      */
     @FXML
     private void onGenerateReport() {
-        String originalText = generateBtn.getText();
-
-        generateBtn.setDisable(true);
-        generateBtn.setText("生成中...");
         String report = dailyReportService.generateReport();
         workReportContentArea.setText(report);
 
-        // 2秒后恢复按钮文本
-        Timeline timeline = new Timeline(
-                new KeyFrame(
-                        Duration.seconds(2),
-                        event -> {
-                            copyBtn.setText(originalText);
-                            copyBtn.setDisable(false);
-                            generateBtn.setDisable(false);
-                        }));
-        timeline.setCycleCount(1);
-        timeline.play();
+        copyBtn.setDisable(false);
     }
 
     /**
@@ -87,23 +73,9 @@ public class DailyReportTemplateController implements Initializable {
      */
     @FXML
     private void onClearContent() {
-        String originalText = clearBtn.getText();
-
-        clearBtn.setDisable(true);
-        clearBtn.setText("清空中...");
         workReportContentArea.clear();
 
-        // 2秒后恢复按钮文本
-        Timeline timeline = new Timeline(
-                new KeyFrame(
-                        Duration.seconds(2),
-                        event -> {
-                            copyBtn.setText(originalText);
-                            copyBtn.setDisable(false);
-                            copyBtn.setDisable(true);
-                        }));
-        timeline.setCycleCount(1);
-        timeline.play();
+        copyBtn.setDisable(true);
     }
 
     /**
@@ -144,7 +116,6 @@ public class DailyReportTemplateController implements Initializable {
         saveBtn.setDisable(true);
         String originalText = saveBtn.getText();
 
-        saveBtn.setText("保存中...");
         String content = workReportContentArea.getText();
         dailyReportService.seveTodayReport(content);
 
