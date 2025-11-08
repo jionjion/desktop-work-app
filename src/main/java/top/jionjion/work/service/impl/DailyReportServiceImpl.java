@@ -81,4 +81,30 @@ public class DailyReportServiceImpl implements DailyReportService {
         dailyReportRepository.save(dailyReport);
         return dailyReport;
     }
+
+    @Override
+    public DailyReport findByReportDate(LocalDate reportDate) {
+        return dailyReportRepository.findByReportDate(reportDate);
+    }
+
+    @Override
+    @Transactional
+    public DailyReport saveOrUpdateReport(LocalDate reportDate, String content) {
+        // 查询是否已存在该日期的日报
+        DailyReport existingReport = dailyReportRepository.findByReportDate(reportDate);
+        
+        if (existingReport != null) {
+            // 更新已存在的日报
+            existingReport.setContent(content);
+            return dailyReportRepository.save(existingReport);
+        } else {
+            // 创建新日报
+            DailyReport newReport = new DailyReport();
+            String title = reportDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "-日报";
+            newReport.setTitle(title);
+            newReport.setContent(content);
+            newReport.setReportDate(reportDate);
+            return dailyReportRepository.save(newReport);
+        }
+    }
 }

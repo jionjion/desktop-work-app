@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javafx.fxml.FXML;
@@ -16,12 +17,16 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
+import lombok.extern.slf4j.Slf4j;
+import top.jionjion.work.entity.DailyReport;
+import top.jionjion.work.service.DailyReportService;
 
 /**
  * 日志管理控制器
  * 
  * @author Jion
  */
+@Slf4j
 @Component
 public class DailyReportSummaryController implements Initializable {
 
@@ -61,7 +66,13 @@ public class DailyReportSummaryController implements Initializable {
     @FXML
     private Button copyBtn;
 
+    @Autowired
+    private DailyReportService dailyReportService;
+
     private YearMonth currentYearMonth;
+
+    // 当前选中的日期
+    private LocalDate selectedDate;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -184,15 +195,20 @@ public class DailyReportSummaryController implements Initializable {
      * 当选择某一天时的处理
      */
     private void onDaySelected(int day) {
-        LocalDate selectedDate = currentYearMonth.atDay(day);
+        selectedDate = currentYearMonth.atDay(day);
 
         // 更新表单标题和副标题
         updateFormTitle();
 
-        // 这里应该从数据库加载该日期的报告内容
-        // 暂时用占位符文本
+        // 从数据库查询该日期的日报
         if (dailyReportRadio.isSelected()) {
-            reportContentArea.setText("这是 " + selectedDate + " 的日报内容。\n\n请在此处填写或编辑日报内容...");
+            // 日报模式
+            DailyReport report = dailyReportService.findByReportDate(selectedDate);
+            if (report != null && report.getContent() != null && !report.getContent().isEmpty()) {
+                reportContentArea.setText(report.getContent());
+            } else {
+                reportContentArea.setText("请在此处填写" + selectedDate + "的日报内容...");
+            }
             // 更新日报副标题为选中的日期
             formSubTitleLabel.setText(selectedDate.toString() + " 日报");
         } else {
@@ -202,7 +218,7 @@ public class DailyReportSummaryController implements Initializable {
             LocalDate weekEnd = selectedDate.with(weekFields.dayOfWeek(), 7);
             int weekOfYear = selectedDate.get(weekFields.weekOfYear());
             reportContentArea
-                    .setText("这是 " + weekStart + " 到 " + weekEnd + " 的第" + weekOfYear + "周周报内容。\n\n请在此处填写或编辑周报内容...");
+                    .setText("请在此处填写 " + weekStart + " 到 " + weekEnd + " 的第" + weekOfYear + "周周报内容...");
             // 更新周报副标题
             formSubTitleLabel.setText("第" + weekOfYear + "周");
         }
@@ -256,11 +272,51 @@ public class DailyReportSummaryController implements Initializable {
      * 保存报告
      */
     private void saveReport() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("保存报告");
-        alert.setHeaderText(null);
-        alert.setContentText("报告已保存成功！");
-        alert.showAndWait();
+        try {
+            // 获取报告内容
+            String content = reportContentArea.getText();
+            
+            if (content == null || content.trim().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("保存失败");
+                alert.setHeaderText(null);
+                alert.setContentText("报告内容不能为空！");
+                alert.showAndWait();
+                return;
+            }
+            
+            if (selectedDate == null) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("保存失败");
+                alert.setHeaderText(null);
+                alert.setContentText("请先选择一个日期！");
+                alert.showAndWait();
+                return;
+            }
+            
+            // 保存或更新日报
+            if (dailyReportRadio.isSelected()) {
+                // 保存日报
+                dailyReportService.saveOrUpdateReport(selectedDate, content);
+                log.info("保存日报成功: {}", selectedDate);
+            } else {
+                // TODO: 后续可以支持周报保存
+                log.warn("周报保存功能暂未实现");
+            }
+            
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("保存报告");
+            alert.setHeaderText(null);
+            alert.setContentText("报告已保存成功！");
+            alert.showAndWait();
+        } catch (Exception e) {
+            log.error("保存报告失败", e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("保存失败");
+            alert.setHeaderText(null);
+            alert.setContentText("保存报告时发生错误: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     /**
