@@ -27,6 +27,7 @@ public class EnvironmentInfoRunner implements EnvironmentAware, ApplicationRunne
     @Override
     public void run(ApplicationArguments args) {
         log.info("------------------ 环境信息 ------------------");
+        log.info("LOCALAPPDATA 环境变量: {}", System.getenv("LOCALAPPDATA"));
         log.info("当前激活的配置文件: {}", String.join(", ", environment.getActiveProfiles()));
         log.info("数据库连接地址: {}", environment.getProperty("spring.datasource.url"));
         log.info("当前环境: {}", environment.getProperty("spring.profiles.active"));
