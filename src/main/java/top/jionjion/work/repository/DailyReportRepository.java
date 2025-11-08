@@ -1,6 +1,8 @@
 package top.jionjion.work.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import top.jionjion.work.entity.DailyReport;
 
@@ -25,5 +27,7 @@ public interface DailyReportRepository extends JpaRepository<DailyReport, Long> 
     /**
      * 根据日报日期删除
      */
+    @Modifying
+    @Query("DELETE FROM DailyReport d WHERE d.reportDate = ?1")
     void deleteByReportDate(LocalDate reportDate);
 }
