@@ -45,6 +45,7 @@ public class AppTemplateConfig {
      */
     private void registerFxmlTemplates() {
         // 注册FXML模板(模板名 -> FXML文件名)
+        fxmlTemplateMap.put("番茄钟", "pomodoro-timer");
         fxmlTemplateMap.put("日报生成", "daily-report");
         fxmlTemplateMap.put("日志管理", "daily-report-summary");
         fxmlTemplateMap.put("项目配置", "code-directory-config");

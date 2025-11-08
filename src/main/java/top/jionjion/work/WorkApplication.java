@@ -71,7 +71,7 @@ public class WorkApplication {
             }
 
             // 初始化系统托盘
-            SystemTrayManager.initSystemTray(primaryStage, AppConfig.ICON_PATH, "个人工作台");
+            SystemTrayManager.initSystemTray(primaryStage, AppConfig.ICON_PATH, AppConfig.APP_NAME);
 
             // 拦截窗口关闭事件，最小化到托盘而不是退出
             primaryStage.setOnCloseRequest(event -> {

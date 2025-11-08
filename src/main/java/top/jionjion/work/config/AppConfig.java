@@ -22,6 +22,11 @@ public class AppConfig {
      */
     public static final String ICON_PATH = "/icon/icon-1000.png";
 
+    /**
+     * 应用名称
+     */
+    public static final String APP_NAME = "个人工作台";
+
 
     /**
      * 获取应用样式表

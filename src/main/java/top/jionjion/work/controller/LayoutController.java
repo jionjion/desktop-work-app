@@ -48,6 +48,7 @@ public class LayoutController {
     private void initialize() {
         // 初始化工具列表
         toolList.getItems().addAll(
+                "番茄钟",
                 "日报生成",
                 "日志管理",
                 "项目配置",
@@ -94,6 +95,7 @@ public class LayoutController {
 
                     // 设置图标（可以同时支持图片和文本图标）
                     String imagePath = switch (toolName) {
+                        case "番茄钟" -> "/icon/shijian.png";
                         case "日报生成" -> "/icon/ribao.png";
                         case "日志管理" -> "/icon/rili.png";
                         case "项目配置" -> "/icon/peizhi.png";
@@ -107,6 +109,7 @@ public class LayoutController {
                     };
 
                     String textIcon = switch (toolName) {
+                        case "番茄钟" -> "⏱";
                         case "日报生成" -> "📝";
                         case "日志管理" -> "📅";
                         case "项目配置" -> "⚙";
@@ -184,7 +187,7 @@ public class LayoutController {
         });
 
         // 初始化默认显示
-        showToolContent("日报生成");
+        showToolContent("番茄钟");
     }
 
     private void showToolContent(String toolName) {
