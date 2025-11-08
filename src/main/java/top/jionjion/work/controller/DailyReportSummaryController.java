@@ -74,6 +74,9 @@ public class DailyReportSummaryController implements Initializable {
     // 当前选中的日期
     private LocalDate selectedDate;
 
+    // 当前选中的日期按钮
+    private Button selectedButton;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 初始化当前年月
@@ -113,7 +116,8 @@ public class DailyReportSummaryController implements Initializable {
 
         // 获取该月的第一天是星期几 (周一作为第一天)
         LocalDate firstDay = currentYearMonth.atDay(1);
-        int dayOfWeek = firstDay.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
+        // 1=Monday, 7=Sunday
+        int dayOfWeek = firstDay.getDayOfWeek().getValue();
 
         // 调整索引，使周一为第一列 (0=Monday, 1=Tuesday, ..., 6=Sunday)
         // 由于我们把周一放在第一列，需要重新计算起始位置
@@ -154,7 +158,7 @@ public class DailyReportSummaryController implements Initializable {
         // 移除固定的宽高设置，让按钮自动填满网格单元格
         button.setMaxWidth(Double.MAX_VALUE);
         button.setMaxHeight(Double.MAX_VALUE);
-        button.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        button.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
         // 去掉点击动画效果，设置为无伪状态
         button.setFocusTraversable(false);
@@ -164,7 +168,7 @@ public class DailyReportSummaryController implements Initializable {
 
         // 设置简单的框框样式，没有背景色填充
         button.setStyle(
-                "-fx-font-size: 18px; -fx-font-weight: bold; -fx-background-color: transparent; -fx-border-color: #adb5bd; -fx-border-width: 1px; -fx-background-insets: 0; -fx-background-radius: 0; -fx-padding: 0;");
+                "-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: transparent; -fx-border-color: #adb5bd; -fx-border-width: 1px; -fx-background-insets: 0; -fx-background-radius: 0; -fx-padding: 0;");
 
         // 为周末添加特殊背景色和边框颜色
         LocalDate date = currentYearMonth.atDay(day);
@@ -172,7 +176,7 @@ public class DailyReportSummaryController implements Initializable {
                 date.getDayOfWeek() == java.time.DayOfWeek.SUNDAY) {
             // 为周末设置浅红色背景
             button.setStyle(
-                    "-fx-font-size: 18px; -fx-font-weight: bold; -fx-background-color: #fff5f5; -fx-border-color: #ff6b6b; -fx-border-width: 1px; -fx-background-insets: 0; -fx-background-radius: 0; -fx-padding: 0;");
+                    "-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #fff5f5; -fx-border-color: #ff6b6b; -fx-border-width: 1px; -fx-background-insets: 0; -fx-background-radius: 0; -fx-padding: 0;");
         }
 
         // 去除按钮的所有效果和动画
@@ -186,7 +190,7 @@ public class DailyReportSummaryController implements Initializable {
         });
 
         // 设置按钮点击事件
-        button.setOnAction(event -> onDaySelected(day));
+        button.setOnAction(event -> onDaySelected(day, button));
 
         return button;
     }
@@ -194,8 +198,17 @@ public class DailyReportSummaryController implements Initializable {
     /**
      * 当选择某一天时的处理
      */
-    private void onDaySelected(int day) {
+    private void onDaySelected(int day, Button clickedButton) {
         selectedDate = currentYearMonth.atDay(day);
+
+        // 清除之前选中按钮的选中样式
+        if (selectedButton != null) {
+            resetButtonStyle(selectedButton);
+        }
+
+        // 为当前按钮应用选中样式
+        applySelectedStyle(clickedButton);
+        selectedButton = clickedButton;
 
         // 更新表单标题和副标题
         updateFormTitle();
@@ -225,6 +238,52 @@ public class DailyReportSummaryController implements Initializable {
     }
 
     /**
+     * 应用选中样式
+     */
+    private void applySelectedStyle(Button button) {
+        // 获取按钮对应的日期
+        int day = Integer.parseInt(button.getText());
+        LocalDate date = currentYearMonth.atDay(day);
+        
+        // 判断是否为周末
+        boolean isWeekend = date.getDayOfWeek() == java.time.DayOfWeek.SATURDAY ||
+                           date.getDayOfWeek() == java.time.DayOfWeek.SUNDAY;
+        
+        if (isWeekend) {
+            // 周末选中样式：深红色背景
+            button.setStyle(
+                    "-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #ffe0e0; -fx-border-color: #ff6b6b; -fx-border-width: 2px; -fx-background-insets: 0; -fx-background-radius: 0; -fx-padding: 0;");
+        } else {
+            // 工作日选中样式：蓝色背景
+            button.setStyle(
+                    "-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #e3f2fd; -fx-border-color: #2196F3; -fx-border-width: 2px; -fx-background-insets: 0; -fx-background-radius: 0; -fx-padding: 0;");
+        }
+    }
+
+    /**
+     * 重置按钮样式为未选中状态
+     */
+    private void resetButtonStyle(Button button) {
+        // 获取按钮对应的日期
+        int day = Integer.parseInt(button.getText());
+        LocalDate date = currentYearMonth.atDay(day);
+        
+        // 判断是否为周末
+        boolean isWeekend = date.getDayOfWeek() == java.time.DayOfWeek.SATURDAY ||
+                           date.getDayOfWeek() == java.time.DayOfWeek.SUNDAY;
+        
+        if (isWeekend) {
+            // 周末默认样式：浅红色背景
+            button.setStyle(
+                    "-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #fff5f5; -fx-border-color: #ff6b6b; -fx-border-width: 1px; -fx-background-insets: 0; -fx-background-radius: 0; -fx-padding: 0;");
+        } else {
+            // 工作日默认样式：透明背景
+            button.setStyle(
+                    "-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: transparent; -fx-border-color: #adb5bd; -fx-border-width: 1px; -fx-background-insets: 0; -fx-background-radius: 0; -fx-padding: 0;");
+        }
+    }
+
+    /**
      * 更新表单标题
      */
     private void updateFormTitle() {
@@ -234,7 +293,7 @@ public class DailyReportSummaryController implements Initializable {
             formSubTitleLabel.setVisible(true);
             // 获取当前日期
             LocalDate currentDate = LocalDate.now();
-            formSubTitleLabel.setText(currentDate.toString() + " 日报");
+            formSubTitleLabel.setText(currentDate + " 日报");
         } else {
             formTitleLabel.setText("周报详情");
             // 显示周报副标题
@@ -257,6 +316,8 @@ public class DailyReportSummaryController implements Initializable {
      */
     private void showPrevMonth() {
         currentYearMonth = currentYearMonth.minusMonths(1);
+        // 清除选中按钮引用
+        selectedButton = null;
         updateCalendar();
     }
 
@@ -265,6 +326,8 @@ public class DailyReportSummaryController implements Initializable {
      */
     private void showNextMonth() {
         currentYearMonth = currentYearMonth.plusMonths(1);
+        // 清除选中按钮引用
+        selectedButton = null;
         updateCalendar();
     }
 
