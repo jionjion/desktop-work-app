@@ -3,6 +3,7 @@ package top.jionjion.work.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.jionjion.work.entity.CodeDirectory;
 import top.jionjion.work.entity.DailyReport;
 import top.jionjion.work.repository.CodeDirectoryRepository;
@@ -64,11 +65,19 @@ public class DailyReportServiceImpl implements DailyReportService {
     }
 
     @Override
+    @Transactional
     public DailyReport seveTodayReport(String content) {
+        LocalDate today = LocalDate.now();
+
+        // 先删除今天的日报
+        dailyReportRepository.deleteByReportDate(today);
+
+        // 再新增今天的日报
         DailyReport dailyReport = new DailyReport();
-        String title = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "-日报";
+        String title = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "-日报";
         dailyReport.setTitle(title);
         dailyReport.setContent(content);
+        dailyReport.setReportDate(today);
         dailyReportRepository.save(dailyReport);
         return dailyReport;
     }

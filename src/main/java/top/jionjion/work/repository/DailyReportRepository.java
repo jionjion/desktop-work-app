@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import top.jionjion.work.entity.DailyReport;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -15,4 +16,14 @@ import java.util.List;
 public interface DailyReportRepository extends JpaRepository<DailyReport, Long> {
 
     List<DailyReport> findByTitle(String title);
+
+    /**
+     * 根据日报日期查找
+     */
+    DailyReport findByReportDate(LocalDate reportDate);
+
+    /**
+     * 根据日报日期删除
+     */
+    void deleteByReportDate(LocalDate reportDate);
 }
