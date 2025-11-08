@@ -16,7 +16,7 @@
               style="-fx-padding: 0 20; -fx-border-color: #e9ecef; -fx-border-width: 0 0 1 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);">
 
             <!-- 左侧标题 -->
-            <Label text="懒，是智慧的起点，也是推动社会进步的隐形引擎" styleClass="h6 text-primary">
+            <Label text="专注，让工作更高效" styleClass="h6 text-primary">
                 <font>
                     <Font name="Microsoft YaHei UI Bold" size="22"/>
                 </font>

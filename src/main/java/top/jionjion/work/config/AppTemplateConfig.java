@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import top.jionjion.work.util.TemplateRenderer;
 
@@ -88,21 +91,34 @@ public class AppTemplateConfig {
      */
     private Node createCalculatorTemplate() {
         VBox container = new VBox(15);
-        container.setStyle("-fx-padding: 20; -fx-alignment: center;");
+        container.setStyle("-fx-padding: 20;");
         container.getStyleClass().addAll("bg-white", "rounded", "shadow");
 
-        Label title = new Label("∑ 计算器");
-        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        // 标题
+        Label title = new Label("计算器");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         title.getStyleClass().add("text-primary");
+        
+        // 分隔线
+        Separator separator = new Separator();
+        HBox separatorBox = new HBox(separator);
+        HBox.setHgrow(separator, Priority.ALWAYS);
 
+        // 显示区域
+        VBox displayBox = new VBox(8);
+        Label displayLabel = new Label("显示屏:");
+        displayLabel.getStyleClass().add("text-dark");
+        
         TextField displayField = new TextField("0");
         displayField.setEditable(false);
-        displayField.setStyle("-fx-font-size: 18px; -fx-alignment: center-right; -fx-pref-width: 250px;");
+        displayField.setStyle("-fx-font-size: 18px; -fx-alignment: center-right; -fx-min-width: 264px; -fx-pref-width: 264px;");
+        displayBox.getChildren().addAll(displayLabel, displayField);
 
         // 创建计算器按钮网格
         GridPane buttonGrid = new GridPane();
-        buttonGrid.setHgap(5);
-        buttonGrid.setVgap(5);
+        buttonGrid.setHgap(8);
+        buttonGrid.setVgap(8);
+        buttonGrid.setStyle("-fx-alignment: center-left;");
 
         String[] buttons = {
                 "C", "±", "%", "÷",
@@ -119,7 +135,7 @@ public class AppTemplateConfig {
 
         for (int i = 0; i < buttons.length; i++) {
             Button btn = new Button(buttons[i]);
-            btn.setPrefSize(50, 50);
+            btn.setPrefSize(60, 60);
 
             if ("0123456789.".contains(buttons[i])) {
                 btn.getStyleClass().addAll("btn", "btn-light");
@@ -198,7 +214,7 @@ public class AppTemplateConfig {
             }
         }
 
-        container.getChildren().addAll(title, displayField, buttonGrid);
+        container.getChildren().addAll(title, separatorBox, displayBox, buttonGrid);
         return container;
     }
 
