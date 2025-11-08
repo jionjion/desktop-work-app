@@ -1,20 +1,20 @@
 package top.jionjion.work;
 
-import java.io.InputStream;
-
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import lombok.Getter;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import top.jionjion.work.config.AppConfig;
 import top.jionjion.work.util.RouterManager;
+import top.jionjion.work.util.SystemTrayManager;
+
+import java.io.InputStream;
 
 /**
  * 启动类
@@ -59,6 +59,9 @@ public class WorkApplication {
 
         @Override
         public void start(Stage primaryStage) {
+            // 禁用隐式退出，防止所有窗口关闭时自动退出应用
+            javafx.application.Platform.setImplicitExit(false);
+
             RouterManager.setStage(primaryStage);
 
             // 添加图标
@@ -66,6 +69,16 @@ public class WorkApplication {
             if (iconStream != null) {
                 primaryStage.getIcons().add(new Image(iconStream));
             }
+
+            // 初始化系统托盘
+            SystemTrayManager.initSystemTray(primaryStage, AppConfig.ICON_PATH, "个人工作台");
+
+            // 拦截窗口关闭事件，最小化到托盘而不是退出
+            primaryStage.setOnCloseRequest(event -> {
+                // 阻止默认关闭行为
+                event.consume();
+                SystemTrayManager.hideToTray(primaryStage);
+            });
 
             // 添加 F5 刷新,到主页面
             primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
@@ -80,6 +93,8 @@ public class WorkApplication {
 
         @Override
         public void stop() {
+            // 移除系统托盘图标
+            SystemTrayManager.removeSystemTray();
             springContext.close();
         }
     }
