@@ -25,6 +25,11 @@ public interface DailyReportRepository extends JpaRepository<DailyReport, Long> 
     DailyReport findByReportDate(LocalDate reportDate);
 
     /**
+     * 根据日期范围查询日报列表
+     */
+    List<DailyReport> findByReportDateBetweenOrderByReportDateAsc(LocalDate startDate, LocalDate endDate);
+
+    /**
      * 根据日报日期删除
      */
     @Modifying

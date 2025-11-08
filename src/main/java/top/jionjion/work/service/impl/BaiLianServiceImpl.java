@@ -1,15 +1,13 @@
 package top.jionjion.work.service.impl;
 
-import org.springframework.stereotype.Service;
-
 import com.alibaba.dashscope.app.Application;
 import com.alibaba.dashscope.app.ApplicationParam;
 import com.alibaba.dashscope.app.ApplicationResult;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import top.jionjion.work.config.BaiLianConfig;
 import top.jionjion.work.entity.BaiLianLog;
 import top.jionjion.work.exception.AppException;
@@ -87,5 +85,16 @@ public class BaiLianServiceImpl implements BaiLianService {
             result = result.substring(3, result.length() - 3).trim();
         }
         return result;
+    }
+
+    /**
+     * 调用百炼-周报生成器
+     *
+     * @param string 提示词
+     * @return 周报
+     */
+    @Override
+    public String invokeWeeklyReport(String string) {
+        return doInvokeBaiLian(baiLianConfig.getWeeklyReportAppId(), string);
     }
 }

@@ -182,6 +182,10 @@
                     styleClass="btn,btn-primary" text="保存"/>
                 <Button fx:id="copyBtn" mnemonicParsing="false"
                     styleClass="btn,btn-outline-secondary" text="复制"/>
+                <Button fx:id="generateDailyBtn" mnemonicParsing="false"
+                    styleClass="btn,btn-success" text="生成日报"/>
+                <Button fx:id="generateBtn" mnemonicParsing="false"
+                    styleClass="btn,btn-success" text="生成周报"/>
             </HBox>
         </VBox>
     </SplitPane>

@@ -24,4 +24,8 @@ public class BaiLianConfig {
      */
     private String dailyReportAppId;
 
+    /**
+     * 周报生成的应用的ID
+     */
+    private String weeklyReportAppId;
 }
