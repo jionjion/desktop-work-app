@@ -4,6 +4,8 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -122,6 +124,40 @@ public class DailyReportSummaryController implements Initializable {
         // 初始化按钮显示状态（默认为日报模式）
         generateDailyBtn.setVisible(true);
         generateBtn.setVisible(false);
+        
+        // 默认选择当前日期
+        selectCurrentDate();
+    }
+
+    /**
+     * 选择当前日期
+     */
+    private void selectCurrentDate() {
+        LocalDate today = LocalDate.now();
+        // 检查当前显示的月份是否是当前月份
+        if (currentYearMonth.getYear() == today.getYear() && 
+            currentYearMonth.getMonthValue() == today.getMonthValue()) {
+            // 查找并选择今天的按钮
+            int day = today.getDayOfMonth();
+            // 遍历calendarGrid中的所有子节点找到对应的按钮
+            calendarGrid.getChildren().stream()
+                .filter(Button.class::isInstance)
+                .filter(node -> ((Button) node).getText().equals(String.valueOf(day)))
+                .findFirst()
+                .ifPresent(node -> onDaySelected(day, (Button) node));
+        } else {
+            // 如果当前显示的不是当前月份，则切换到当前月份并选择今天
+            currentYearMonth = YearMonth.from(today);
+            updateCalendar();
+            
+            // 再次查找并选择今天的按钮
+            int day = today.getDayOfMonth();
+            calendarGrid.getChildren().stream()
+                .filter(Button.class::isInstance)
+                .filter(node -> ((Button) node).getText().equals(String.valueOf(day)))
+                .findFirst()
+                .ifPresent(node -> onDaySelected(day, (Button) node));
+        }
     }
 
     /**
@@ -316,64 +352,92 @@ public class DailyReportSummaryController implements Initializable {
      */
     private void updateFormTitle() {
         if (dailyReportRadio.isSelected()) {
-            formTitleLabel.setText("日报详情");
-            // 显示日报副标题
-            formSubTitleLabel.setVisible(true);
-            // 显示生成日报按钮，隐藏生成周报按钮
-            generateDailyBtn.setVisible(true);
-            generateBtn.setVisible(false);
-            
-            // 加载日报内容
-            if (selectedDate != null) {
-                DailyReport report = dailyReportService.findByReportDate(selectedDate);
-                if (report != null && report.getContent() != null && !report.getContent().isEmpty()) {
-                    reportContentArea.setText(report.getContent());
-                } else {
-                    reportContentArea.setText("请在此处填写" + selectedDate + "的日报内容...");
-                }
-                formSubTitleLabel.setText(selectedDate.toString() + " 日报");
-            } else {
-                // 获取当前日期
-                LocalDate currentDate = LocalDate.now();
-                formSubTitleLabel.setText(currentDate + " 日报");
-                reportContentArea.setText("请在日历中选择一个日期查看或编辑日报...");
-            }
+            updateDailyReportForm();
         } else {
-            formTitleLabel.setText("周报详情");
-            // 显示周报副标题
-            // 隐藏生成日报按钮，显示生成周报按钮
-            generateDailyBtn.setVisible(false);
-            generateBtn.setVisible(true);
-            
-            // 加载周报内容
-            if (selectedDate != null) {
-                java.time.temporal.WeekFields weekFields = java.time.temporal.WeekFields.of(java.time.DayOfWeek.MONDAY, 1);
-                LocalDate weekStart = selectedDate.with(weekFields.dayOfWeek(), 1);
-                LocalDate weekEnd = selectedDate.with(weekFields.dayOfWeek(), 7);
-                int year = selectedDate.getYear();
-                int weekOfYear = selectedDate.get(weekFields.weekOfYear());
-                
-                // 查询该周的周报
-                WeeklyReport weeklyReport = weeklyReportService.findByYearAndWeekOfYear(year, weekOfYear);
-                if (weeklyReport != null && weeklyReport.getContent() != null && !weeklyReport.getContent().isEmpty()) {
-                    reportContentArea.setText(weeklyReport.getContent());
-                } else {
-                    reportContentArea.setText("请在此处填写 " + weekStart + " 到 " + weekEnd + " 的第" + weekOfYear + "周周报内容...");
-                }
-                formSubTitleLabel.setText("第" + weekOfYear + "周");
+            updateWeeklyReportForm();
+        }
+    }
+    
+    /**
+     * 更新日报表单
+     */
+    private void updateDailyReportForm() {
+        formTitleLabel.setText("日报详情");
+        // 显示日报副标题
+        formSubTitleLabel.setVisible(true);
+        // 显示生成日报按钮，隐藏生成周报按钮
+        generateDailyBtn.setVisible(true);
+        generateBtn.setVisible(false);
+        
+        // 加载日报内容
+        updateDailyReportContent();
+    }
+    
+    /**
+     * 更新周报表单
+     */
+    private void updateWeeklyReportForm() {
+        formTitleLabel.setText("周报详情");
+        // 显示周报副标题
+        // 隐藏生成日报按钮，显示生成周报按钮
+        generateDailyBtn.setVisible(false);
+        generateBtn.setVisible(true);
+        
+        // 加载周报内容
+        updateWeeklyReportContent();
+    }
+    
+    /**
+     * 更新日报内容
+     */
+    private void updateDailyReportContent() {
+        if (selectedDate != null) {
+            DailyReport report = dailyReportService.findByReportDate(selectedDate);
+            if (report != null && report.getContent() != null && !report.getContent().isEmpty()) {
+                reportContentArea.setText(report.getContent());
             } else {
-                if (currentYearMonth != null) {
-                    // 获取当前日期的周数
-                    java.time.temporal.WeekFields weekFields = java.time.temporal.WeekFields.of(java.time.DayOfWeek.MONDAY, 1);
-                    LocalDate currentDate = java.time.LocalDate.now();
-                    int weekOfYear = currentDate.get(weekFields.weekOfYear());
-                    formSubTitleLabel.setText("第" + weekOfYear + "周");
-                    formSubTitleLabel.setVisible(true);
-                } else {
-                    formSubTitleLabel.setVisible(false);
-                }
-                reportContentArea.setText("请在日历中选择一个日期查看或编辑周报...");
+                reportContentArea.setText("请在此处填写" + selectedDate + "的日报内容...");
             }
+            formSubTitleLabel.setText(selectedDate.toString() + " 日报");
+        } else {
+            // 获取当前日期
+            LocalDate currentDate = LocalDate.now();
+            formSubTitleLabel.setText(currentDate + " 日报");
+            reportContentArea.setText("请在日历中选择一个日期查看或编辑日报...");
+        }
+    }
+    
+    /**
+     * 更新周报内容
+     */
+    private void updateWeeklyReportContent() {
+        if (selectedDate != null) {
+            java.time.temporal.WeekFields weekFields = java.time.temporal.WeekFields.of(java.time.DayOfWeek.MONDAY, 1);
+            LocalDate weekStart = selectedDate.with(weekFields.dayOfWeek(), 1);
+            LocalDate weekEnd = selectedDate.with(weekFields.dayOfWeek(), 7);
+            int year = selectedDate.getYear();
+            int weekOfYear = selectedDate.get(weekFields.weekOfYear());
+            
+            // 查询该周的周报
+            WeeklyReport weeklyReport = weeklyReportService.findByYearAndWeekOfYear(year, weekOfYear);
+            if (weeklyReport != null && weeklyReport.getContent() != null && !weeklyReport.getContent().isEmpty()) {
+                reportContentArea.setText(weeklyReport.getContent());
+            } else {
+                reportContentArea.setText("请在此处填写 " + weekStart + " 到 " + weekEnd + " 的第" + weekOfYear + "周周报内容...");
+            }
+            formSubTitleLabel.setText("第" + weekOfYear + "周");
+        } else {
+            if (currentYearMonth != null) {
+                // 获取当前日期的周数
+                java.time.temporal.WeekFields weekFields = java.time.temporal.WeekFields.of(java.time.DayOfWeek.MONDAY, 1);
+                LocalDate currentDate = java.time.LocalDate.now();
+                int weekOfYear = currentDate.get(weekFields.weekOfYear());
+                formSubTitleLabel.setText("第" + weekOfYear + "周");
+                formSubTitleLabel.setVisible(true);
+            } else {
+                formSubTitleLabel.setVisible(false);
+            }
+            reportContentArea.setText("请在日历中选择一个日期查看或编辑周报...");
         }
     }
 
@@ -487,17 +551,18 @@ public class DailyReportSummaryController implements Initializable {
             String originalText = copyBtn.getText();
             copyBtn.setText("已复制!");
 
-            // 2秒后恢复按钮文本
-            new Thread(() -> {
-                try {
-                    Thread.sleep(2000);
-                    javafx.application.Platform.runLater(() -> {
-                        copyBtn.setText(originalText);
-                    });
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }).start();
+            // 使用虚拟线程执行阻塞操作
+            try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+                // 2秒后恢复按钮文本
+                executor.submit(() -> {
+                    try {
+                        Thread.sleep(2000);
+                        javafx.application.Platform.runLater(() -> copyBtn.setText(originalText));
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                });
+            }
         }
     }
 
