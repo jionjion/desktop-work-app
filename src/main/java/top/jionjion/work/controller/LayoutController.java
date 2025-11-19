@@ -62,13 +62,12 @@ public class LayoutController {
         toolList.setCellFactory(param -> new ListCell<>() {
             private final HBox container = new HBox(10);
             private final ImageView iconView = new ImageView();
-            private final Label iconLabel = new Label();
             private final Label textLabel = new Label();
 
             {
                 container.setAlignment(Pos.CENTER_LEFT);
                 container.setPadding(new Insets(8, 12, 8, 12));
-                container.getChildren().addAll(iconView, iconLabel, textLabel);
+                container.getChildren().addAll(iconView, textLabel);
                 container.getStyleClass().addAll("list-cell-container");
 
                 // 设置图标大小
@@ -78,7 +77,6 @@ public class LayoutController {
 
                 // 默认隐藏不需要的组件
                 iconView.setVisible(false);
-                iconLabel.setVisible(false);
             }
 
             @Override
@@ -89,11 +87,10 @@ public class LayoutController {
                     setText(null);
                     container.getStyleClass().removeAll("bg-light", "text-primary");
                 } else {
-                    // 先隐藏所有图标
+                    // 先隐藏图标
                     iconView.setVisible(false);
-                    iconLabel.setVisible(false);
 
-                    // 设置图标（可以同时支持图片和文本图标）
+                    // 设置图标（只使用图片图标）
                     String imagePath = switch (toolName) {
                         case "番茄钟" -> "/icon/shijian.png";
                         case "日报生成" -> "/icon/ribao.png";
@@ -105,38 +102,24 @@ public class LayoutController {
                         case "Base64编解码" -> "/icon/base64.png";
                         case "计算器" -> "/icon/jisuanqi.png";
 
-                        default -> null;
+                        default -> "/icon/icon.png"; // 默认图标
                     };
 
-                    String textIcon = switch (toolName) {
-                        case "番茄钟" -> "⏱";
-                        case "日报生成" -> "📝";
-                        case "日志管理" -> "📅";
-                        case "项目配置" -> "⚙";
-                        case "待办记录" -> "☑";
-                        case "文件快捷访问" -> "📁";
-                        case "JSON工具" -> "≡";
-                        case "二维码生成" -> "▣";
-                        case "Base64编解码" -> "⑥";
-                        case "计算器" -> "∑";
-                        default -> "●";
-                    };
-
-                    // 优先使用图片图标，如果没有则使用文本图标
-                    if (imagePath != null) {
+                    // 使用图片图标
+                    try {
+                        Image iconImage = new Image(LayoutController.class.getResourceAsStream(imagePath));
+                        iconView.setImage(iconImage);
+                        iconView.setVisible(true);
+                    } catch (Exception e) {
+                        log.error("图片加载失败：{}", e.getMessage());
+                        // 如果图片加载失败，使用默认图标
                         try {
-                            Image iconImage = new Image(LayoutController.class.getResourceAsStream(imagePath));
-                            iconView.setImage(iconImage);
+                            Image defaultImage = new Image(LayoutController.class.getResourceAsStream("/icon/icon.png"));
+                            iconView.setImage(defaultImage);
                             iconView.setVisible(true);
-                        } catch (Exception e) {
-                            log.error("图片加载失败：{}", e.getMessage());
-                            // 如果图片加载失败，回退到文本图标
-                            iconLabel.setText(textIcon);
-                            iconLabel.setVisible(true);
+                        } catch (Exception ex) {
+                            log.error("默认图片加载失败：{}", ex.getMessage());
                         }
-                    } else {
-                        iconLabel.setText(textIcon);
-                        iconLabel.setVisible(true);
                     }
 
                     textLabel.setText(toolName);

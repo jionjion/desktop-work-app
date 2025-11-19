@@ -20,6 +20,6 @@ public class AppStyle {
     /**
      * 字体大小
      */
-    public static final Double DEFATULT_FONT_SIZE = 16d;
+    public static final Double DEFAULT_FONT_SIZE = 16d;
 
 }

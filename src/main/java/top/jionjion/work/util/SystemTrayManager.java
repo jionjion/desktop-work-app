@@ -82,8 +82,6 @@ public class SystemTrayManager {
             // 将托盘图标添加到系统托盘
             systemTray.add(trayIcon);
 
-            log.info("系统托盘初始化成功");
-
         } catch (IOException | AWTException e) {
             log.error("系统托盘初始化失败", e);
         }
@@ -146,7 +144,6 @@ public class SystemTrayManager {
             SystemTray systemTray = SystemTray.getSystemTray();
             systemTray.remove(trayIcon);
             trayIcon = null;
-            log.info("系统托盘图标已移除");
         }
     }
 }
